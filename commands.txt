@@ -1,0 +1,42 @@
+**************init_setup.sh*************
+
+#!/bin/bash
+
+export DATAFORTRESS_SRC=$HOME
+export DATAFORTRESS_HOME=$HOME/transfer
+
+if [ -d "$HOME/transfer" ]; then
+  cd $HOME/transfer
+else
+  mkdir $HOME/transfer
+  cd $HOME/transfer
+fi
+
+bash $DATAFORTRESS_SRC/gen_key_pair.sh
+
+*******************
+
+
+
+****************gen_key_pair.sh**********************
+
+openssl genrsa -out $DATAFORTRESS_HOME/private_key.pem 1024;
+openssl rsa -in $DATAFORTRESS/private_key.pem -pubout -out $DATAFORTRESS/public_key.pem;
+
+****************************
+
+on instance
+openssl pkeyutl -decrypt -inkey private_key.pem -in encrypted_aes256.key -out aes256.key
+openssl enc -d -aes-256-cbc -pbkdf2 -in encrypted_secret.txt -out secret.txt -kfile aes256.key
+
+or 
+openssl pkeyutl -decrypt -inkey private_key.pem -in encrypted_aes256.key | openssl enc -d -aes-256-cbc -pbkdf2 -in encrypted_secret.txt -out secret.txt -pass stdin
+
+
+onlocal 
+bash transfer.sh ~/secret.txt ubuntu@ip ~/minorproject.pem
+
+copy
+sudo scp -i minorproject.pem /home/USER/gen_key_pair.sh ubuntu@ip:
+
+
